@@ -11,15 +11,15 @@ import time
 # Connect to database
 # You should not need to edit anything in this function
 def connect_to_sql():
-    conn = mysql.connector.connect(user='root', password='',
-                                  host='127.0.0.1',
+    conn = mysql.connector.connect(user='norestrict', password='',
+                                  host='127.0.0.1', port = 8889,
                                   database='cna330')
     return conn
 
 # Create the table structure
 def create_tables(cursor, table):
     ## Add your code here. Starter code below
-    cursor.execute('''CREATE TABLE IF NOT EXISTS tablename (id INT PRIMARY KEY); ''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS jobs (id INT PRIMARY KEY, PostDate INT, Title TEXT, Description TEXT, Company TEXT, Apply_info TEXT, Salary FLOAT, Raw_Message TEXT); ''')
     return
 
 # Query the database.
@@ -31,7 +31,7 @@ def query_sql(cursor, query):
 # Add a new job
 def add_new_job(cursor, jobdetails):
     ## Add your code here
-    query = "INSERT INTO"
+    query = "INSERT INTO jobs"
     return query_sql(cursor, query)
 
 # Check if new job
@@ -60,14 +60,14 @@ def fetch_new_jobs(arg_dict):
 
 # Load a text-based configuration file
 def load_config_file(filename):
-    argument_dictionary = 0
+    argument_dictionary = []
     # Code from https://github.com/RTCedu/CNA336/blob/master/Spring2018/FileIO.py
     rel_path = os.path.abspath(os.path.dirname(__file__))
     file = 0
     file_contents = 0
     try:
         file = open(filename, "r")
-        file_contents = file.read()
+        ##file_contents = file.read()
     except FileNotFoundError:
         print("File not found, it will be created.")
         file = open(filename, "w")
@@ -75,6 +75,10 @@ def load_config_file(filename):
         file.close()
 
     ## Add in information for argument dictionary
+    for aline in file.readlines():
+       aline = aline.strip()
+       argument_dictionary.append(aline)
+
     return argument_dictionary
 
 # Main area of the code.
@@ -101,7 +105,7 @@ def main():
     arg_dict = load_config_file(sys.argv[1])
     while(1):
         jobhunt(arg_dict)
-        time.sleep(3600); # Sleep for 1h
+        time.sleep(3600) # Sleep for 1
 
 if __name__ == '__main__':
     main()
